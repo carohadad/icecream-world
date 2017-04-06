@@ -1,0 +1,43 @@
+{
+  "name": "icecream-world",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "jest",
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carohadad/icecream-world.git"
+  },
+  "author": "carohadad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/carohadad/icecream-world/issues"
+  },
+  "homepage": "http://carohadad.github.io/icecream-world",
+  "dependencies": {
+    "babel-jest": "^19.0.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "enzyme": "^2.8.0",
+    "gh-pages": "^0.12.0",
+    "jest": "^19.0.2",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-scripts": "^0.9.5",
+    "react-addons-test-utils": "^15.4.2",
+    "react-test-renderer": "^15.4.2"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|less)$": "<rootDir>/test/__mocks__/styleMock.js"
+    },
+    "collectCoverage": true
+  }
+}
