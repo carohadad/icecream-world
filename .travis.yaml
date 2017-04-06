@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+  - "6"
+
+addons:
+  code_climate:
+    repo_token: 7a365247b6c6bb9e77b0f97893f3eeed181b0747fbbd9b0fd1b73b85624186e0
+    
+after_success:
+  - npm install -g codeclimate-test-reporter
+  - codeclimate-test-reporter < coverage/lcov.info
