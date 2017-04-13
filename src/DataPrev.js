@@ -7,17 +7,17 @@ class DataPrev extends React.Component {
     this.state = {
       votes: []
     }
-    this.votes = []
   }
 
   componentWillMount() {
     this.firebaseVotesRef = databaseRef.ref("votes");
-    this.firebaseVotesRef.on("child_added", function(dataSnapshot) {
-      this.votes.push(dataSnapshot.val());
+    this.firebaseVotesRef.on("child_added", (childData) => {
+      var votes = this.state.votes;
+      votes.push(childData.val())
       this.setState({
-        votes: this.votes
+        votes: votes
       });
-    }.bind(this));
+    }).bind(this);
   }
 
   componentWillUnmount() {
