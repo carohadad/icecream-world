@@ -29,7 +29,7 @@ class DataPrev extends React.Component {
       <div>
         <h1>Ice Cream World</h1>
         <div>Because we all like icecream</div>
-        <div>But does everyone like the same flavours?</div>
+        <div>But does everyone like the same flavors?</div>
         <div>Is it there ANY world favourite?</div>
 
         <div>So far {this.state.votes.length} people voted. And counting! </div>

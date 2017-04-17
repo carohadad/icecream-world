@@ -2,6 +2,8 @@ import React from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import RaisedButton from 'material-ui/RaisedButton';
+import Chip from 'material-ui/Chip';
+
 import databaseRef from './database.js'
 
 import './Form.css';
@@ -38,47 +40,64 @@ class ConuntrySelector extends React.Component {
   }
 }
 
-class FlavoursSelector extends React.Component {
+class FlavorsSelector extends React.Component {
 
   constructor() {
     super();
     this.state = {
-      dataSource : []
+      dataSource : [],
+      selectedFlavors: []
     }
   }
 
   componentWillMount() {
-    this.firebaseFlavoursRef = databaseRef.ref("flavours");
-    this.firebaseFlavoursRef.once('value').then((snapshot) => {
-      var flavours = []
-      snapshot.forEach((elem) => {
-        flavours.push(elem.val())
+    databaseRef.ref("flavours").once('value').then((flavorSnapshot) => {
+      var flavors = []
+      flavorSnapshot.forEach((elem) => {
+        flavors.push(elem.val())
       })
       this.setState({
-        dataSource: flavours
+        dataSource: flavors
       });
     });
   }
 
   componentWillUnmount() {
-    this.firebaseFlavoursRef.off();
+    this.firebaseflavorsRef.off();
   }
 
   dataSourceConfig() {
     return { text: 'name', value: 'name'}
   }
 
+  flavorSelected(flavor) {
+    this.state.selectedFlavors.push(flavor);
+    this.setState({selectedFlavors: this.state.selectedFlavors});
+  }
+
+  renderChips(flavors) {
+    return flavors.map((elem) =>
+      <Chip backgroundColor={elem.color}>
+        {elem.name}
+      </Chip>
+    )
+  }
+
   render() {
     return (
-       <AutoComplete
-          hintText="Select your favourite Ice Cream flavours"
-          dataSource={this.state.dataSource}
-          dataSourceConfig={this.dataSourceConfig()}
-          floatingLabelText="Select your favourite Ice Cream flavours"
-          fullWidth={true}
-          filter={AutoComplete.fuzzyFilter}
-          maxSearchResults={5}
-        />
+        <div>
+            {this.renderChips(this.state.selectedFlavors)}
+            <AutoComplete
+               hintText="Select your favourite Ice Cream flavors"
+               dataSource={this.state.dataSource}
+               dataSourceConfig={this.dataSourceConfig()}
+               floatingLabelText="Select your favourite Ice Cream flavors"
+               fullWidth={true}
+               filter={AutoComplete.fuzzyFilter}
+               maxSearchResults={5}
+               onNewRequest={(flavor) => this.flavorSelected(flavor)}
+             />
+          </div>
     )
   }
 }
@@ -88,7 +107,7 @@ class Form extends React.Component {
       super();
       this.state = {
         selectedCountry: null,
-        flavours:[]
+        flavors:[]
       };
       this.firebaseVotes = databaseRef.ref("votes");
 
@@ -100,13 +119,13 @@ class Form extends React.Component {
     })
   }
 
-  flavoursSelected() {
+  flavorsSelected() {
 
   }
 
   submit() {
     if (this.state.selectedCountry) {
-      this.firebaseVotes.push({country: this.state.selectedCountry, flavours: this.state.flavours});
+      this.firebaseVotes.push({country: this.state.selectedCountry, flavors: this.state.flavors});
     }
   }
 
@@ -115,7 +134,7 @@ class Form extends React.Component {
     return(
       <div>
         <ConuntrySelector countrySelected={(countryName) => this.countrySelected(countryName)}/>
-        <FlavoursSelector flavoursSelected={(flavoursArray) => this.flavoursSelected(flavoursArray)} />
+        <FlavorsSelector flavorsSelected={(flavorsArray) => this.flavorsSelected(flavorsArray)} />
         <RaisedButton label="Vote!" primary={true} onClick={()=> this.submit()}/>
       </div>
     )
