@@ -19,7 +19,7 @@ class ConuntrySelector extends React.Component {
 
   constructor() {
     super();
-    var countries = require('country-list')();
+    let countries = require('country-list')();
     this.state = {
       dataSource: countries.getNames(),
       errorText: ""
@@ -63,7 +63,7 @@ class FlavorsSelector extends React.Component {
 
   componentWillMount() {
     databaseRef.ref("flavours").once('value').then((flavorSnapshot) => {
-      var flavors = []
+      let flavors = []
       flavorSnapshot.forEach((elem) => {
         flavors.push({name: elem.val().name, color: elem.val().color, key: elem.getKey()});
       })
@@ -90,7 +90,11 @@ class FlavorsSelector extends React.Component {
 
   renderChips(flavors) {
     return flavors.map((elem) =>
-      <Chip backgroundColor={elem.color} key={elem.key}>
+      <Chip
+        backgroundColor={elem.color}
+        key={elem.key}
+        onRequestDelete={() => this.props.handleFlavorDelete(elem.key)}
+      >
         {elem.name}
       </Chip>
     )
@@ -143,9 +147,16 @@ class Form extends React.Component {
     })
   }
 
-  flavorSelected(flavor) {
+  handleflavorSelected(flavor) {
     this.state.flavors.push(flavor);
     this.setState({flavors: this.state.flavors});
+  }
+
+  handleFlavorDelete(key) {
+    let flavors = this.state.flavors;
+    const flavourToDelete = flavors.map((flavor) => flavor.key).indexOf(key);
+    flavors.splice(flavourToDelete, 1);
+    this.setState({flavors: flavors});
   }
 
   submit() {
@@ -154,12 +165,14 @@ class Form extends React.Component {
     }
   }
 
-
   render() {
     return(
       <div>
         <ConuntrySelector countrySelected={(countryName) => this.countrySelected(countryName)}/>
-        <FlavorsSelector flavorSelected={(flavor) => this.flavorSelected(flavor)} flavors={this.state.flavors} />
+        <FlavorsSelector
+          flavorSelected={(flavor) => this.handleflavorSelected(flavor)}
+          flavors={this.state.flavors}
+          handleFlavorDelete={(key) => this.handleFlavorDelete(key)} />
         <RaisedButton label="Vote!" primary={true} onClick={()=> this.submit()}/>
       </div>
     )
