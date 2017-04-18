@@ -46,7 +46,8 @@ class FlavorsSelector extends React.Component {
     super();
     this.state = {
       dataSource : [],
-      selectedFlavors: []
+      selectedFlavors: [],
+      searchText: ""
     }
   }
 
@@ -54,7 +55,7 @@ class FlavorsSelector extends React.Component {
     databaseRef.ref("flavours").once('value').then((flavorSnapshot) => {
       var flavors = []
       flavorSnapshot.forEach((elem) => {
-        flavors.push(elem.val())
+        flavors.push({name: elem.val().name, color: elem.val().color, key: elem.getKey()});
       })
       this.setState({
         dataSource: flavors
@@ -72,12 +73,18 @@ class FlavorsSelector extends React.Component {
 
   flavorSelected(flavor) {
     this.state.selectedFlavors.push(flavor);
-    this.setState({selectedFlavors: this.state.selectedFlavors});
+    this.setState({selectedFlavors: this.state.selectedFlavors, searchText: ""});
   }
+
+  handleUpdateInput(searchText) {
+    this.setState({
+        searchText: searchText,
+      });
+    };
 
   renderChips(flavors) {
     return flavors.map((elem) =>
-      <Chip backgroundColor={elem.color}>
+      <Chip backgroundColor={elem.color} key={elem.key}>
         {elem.name}
       </Chip>
     )
@@ -88,14 +95,16 @@ class FlavorsSelector extends React.Component {
         <div>
             {this.renderChips(this.state.selectedFlavors)}
             <AutoComplete
-               hintText="Select your favourite Ice Cream flavors"
-               dataSource={this.state.dataSource}
-               dataSourceConfig={this.dataSourceConfig()}
-               floatingLabelText="Select your favourite Ice Cream flavors"
-               fullWidth={true}
-               filter={AutoComplete.fuzzyFilter}
-               maxSearchResults={5}
-               onNewRequest={(flavor) => this.flavorSelected(flavor)}
+              hintText="Select your favourite Ice Cream flavors"
+              dataSource={this.state.dataSource}
+              dataSourceConfig={this.dataSourceConfig()}
+              floatingLabelText="Select your favourite Ice Cream flavors"
+              fullWidth={true}
+              filter={AutoComplete.fuzzyFilter}
+              maxSearchResults={5}
+              onNewRequest={(flavor) => this.flavorSelected(flavor)}
+              searchText={this.state.searchText}
+              onUpdateInput={(newText) => this.handleUpdateInput(newText)}
              />
           </div>
     )
