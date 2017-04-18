@@ -46,7 +46,6 @@ class FlavorsSelector extends React.Component {
     super();
     this.state = {
       dataSource : [],
-      selectedFlavors: [],
       searchText: ""
     }
   }
@@ -71,11 +70,6 @@ class FlavorsSelector extends React.Component {
     return { text: 'name', value: 'name'}
   }
 
-  flavorSelected(flavor) {
-    this.state.selectedFlavors.push(flavor);
-    this.setState({selectedFlavors: this.state.selectedFlavors, searchText: ""});
-  }
-
   handleUpdateInput(searchText) {
     this.setState({
         searchText: searchText,
@@ -90,10 +84,15 @@ class FlavorsSelector extends React.Component {
     )
   }
 
+  flavorSelected(flavor) {
+    this.setState({searchText: ""});
+    this.props.flavorSelected(flavor);
+  }
+
   render() {
     return (
         <div>
-            {this.renderChips(this.state.selectedFlavors)}
+            {this.renderChips(this.props.flavors)}
             <AutoComplete
               hintText="Select your favourite Ice Cream flavors"
               dataSource={this.state.dataSource}
@@ -105,6 +104,7 @@ class FlavorsSelector extends React.Component {
               onNewRequest={(flavor) => this.flavorSelected(flavor)}
               searchText={this.state.searchText}
               onUpdateInput={(newText) => this.handleUpdateInput(newText)}
+              openOnFocus={true}
              />
           </div>
     )
@@ -128,8 +128,9 @@ class Form extends React.Component {
     })
   }
 
-  flavorsSelected() {
-
+  flavorSelected(flavor) {
+    this.state.flavors.push(flavor);
+    this.setState({flavors: this.state.flavors});
   }
 
   submit() {
@@ -143,7 +144,7 @@ class Form extends React.Component {
     return(
       <div>
         <ConuntrySelector countrySelected={(countryName) => this.countrySelected(countryName)}/>
-        <FlavorsSelector flavorsSelected={(flavorsArray) => this.flavorsSelected(flavorsArray)} />
+        <FlavorsSelector flavorSelected={(flavor) => this.flavorSelected(flavor)} flavors={this.state.flavors} />
         <RaisedButton label="Vote!" primary={true} onClick={()=> this.submit()}/>
       </div>
     )
