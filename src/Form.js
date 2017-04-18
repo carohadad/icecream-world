@@ -27,7 +27,7 @@ class ConuntrySelector extends React.Component {
   }
 
   handleUpdateInput(searchText) {
-    let errorText = ((searchText == "") ? "Please enter your location." : "");
+    let errorText = ((searchText === "") ? "Please enter your location." : "");
     this.setState({
       errorText: errorText
     });
@@ -82,7 +82,7 @@ class FlavorsSelector extends React.Component {
   }
 
   handleUpdateInput(searchText) {
-    let errorText = ((searchText == "") ? "Please enter at least one flavor." : "");
+    let errorText = ((searchText === "" && this.props.flavors.length === 0) ? "Please enter at least one flavor." : "");
     this.setState({
       searchText: searchText, errorText: errorText
     });
@@ -98,7 +98,9 @@ class FlavorsSelector extends React.Component {
 
   flavorSelected(flavor) {
     this.setState({searchText: ""});
-    this.props.flavorSelected(flavor);
+    if (!this.props.flavors.includes(flavor)) {
+      this.props.flavorSelected(flavor);
+    }
   }
 
   render() {
@@ -109,7 +111,7 @@ class FlavorsSelector extends React.Component {
               hintText="Select your favourite Ice Cream flavors"
               dataSource={this.state.dataSource}
               dataSourceConfig={this.dataSourceConfig()}
-              floatingLabelText="Select your favourite Ice Cream flavors"
+              floatingLabelText="Add your favourite Ice Cream flavors :-)"
               fullWidth={true}
               filter={AutoComplete.fuzzyFilter}
               maxSearchResults={5}
