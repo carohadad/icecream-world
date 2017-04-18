@@ -22,8 +22,16 @@ class ConuntrySelector extends React.Component {
     var countries = require('country-list')();
     this.state = {
       dataSource: countries.getNames(),
+      errorText: ""
     };
   }
+
+  handleUpdateInput(searchText) {
+    let errorText = ((searchText == "") ? "Please enter your location." : "");
+    this.setState({
+      errorText: errorText
+    });
+  };
 
   render() {
     return(
@@ -35,6 +43,8 @@ class ConuntrySelector extends React.Component {
           filter={AutoComplete.fuzzyFilter}
           maxSearchResults={5}
           onNewRequest={(countryName) => this.props.countrySelected(countryName)}
+          onUpdateInput={(newText) => this.handleUpdateInput(newText)}
+          errorText={this.state.errorText}
         />
     )
   }
@@ -46,7 +56,8 @@ class FlavorsSelector extends React.Component {
     super();
     this.state = {
       dataSource : [],
-      searchText: ""
+      searchText: "",
+      errorText: ""
     }
   }
 
@@ -71,10 +82,11 @@ class FlavorsSelector extends React.Component {
   }
 
   handleUpdateInput(searchText) {
+    let errorText = ((searchText == "") ? "Please enter at least one flavor." : "");
     this.setState({
-        searchText: searchText,
-      });
-    };
+      searchText: searchText, errorText: errorText
+    });
+  };
 
   renderChips(flavors) {
     return flavors.map((elem) =>
@@ -105,6 +117,7 @@ class FlavorsSelector extends React.Component {
               searchText={this.state.searchText}
               onUpdateInput={(newText) => this.handleUpdateInput(newText)}
               openOnFocus={true}
+              errorText={this.state.errorText}
              />
           </div>
     )
@@ -134,7 +147,7 @@ class Form extends React.Component {
   }
 
   submit() {
-    if (this.state.selectedCountry) {
+    if (this.state.selectedCountry && this.state.flavors.length > 0) {
       this.firebaseVotes.push({country: this.state.selectedCountry, flavors: this.state.flavors});
     }
   }
