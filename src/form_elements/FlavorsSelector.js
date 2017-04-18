@@ -3,6 +3,7 @@ import Chip from 'material-ui/Chip';
 import AutoComplete from 'material-ui/AutoComplete';
 //TODO: Remove this DB reference and move to parent
 import databaseRef from './../database.js'
+import NewFlavor from './NewFlavor'
 
 class FlavorsSelector extends React.Component {
 
@@ -13,18 +14,17 @@ class FlavorsSelector extends React.Component {
       searchText: "",
       errorText: ""
     }
+    this.firebaseFlavours = databaseRef.ref("flavors");
   }
 
   componentWillMount() {
-    databaseRef.ref("flavours").once('value').then((flavorSnapshot) => {
-      let flavors = []
-      flavorSnapshot.forEach((elem) => {
-        flavors.push({name: elem.val().name, color: elem.val().color, key: elem.getKey()});
-      })
+    this.firebaseFlavours.on("child_added", (childData) => {
+      var flavors = this.state.dataSource;
+      flavors.push({name: childData.val().name, color: childData.val().color, key: childData.getKey()});
       this.setState({
         dataSource: flavors
       });
-    });
+    }).bind(this);
   }
 
   componentWillUnmount() {
@@ -61,6 +61,10 @@ class FlavorsSelector extends React.Component {
     }
   }
 
+  addFlavor(name, color) {
+    this.firebaseFlavours.push({name: name, color: color});
+  }
+
   render() {
     return (
         <div>
@@ -80,7 +84,7 @@ class FlavorsSelector extends React.Component {
             openOnFocus={true}
             errorText={this.state.errorText}
           />
-
+          <NewFlavor flavorAddedHandler={(name, color) => this.addFlavor(name, color)}/>
         </div>
     )
   }
