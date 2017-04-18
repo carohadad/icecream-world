@@ -39,7 +39,6 @@ class ConuntrySelector extends React.Component {
           hintText="Type your country name"
           dataSource={this.state.dataSource}
           floatingLabelText="Where are you from?"
-          fullWidth={true}
           filter={AutoComplete.fuzzyFilter}
           maxSearchResults={5}
           onNewRequest={(countryName) => this.props.countrySelected(countryName)}
@@ -110,22 +109,24 @@ class FlavorsSelector extends React.Component {
   render() {
     return (
         <div>
+          <div className="chips">
             {this.renderChips(this.props.flavors)}
-            <AutoComplete
-              hintText="Select your favourite Ice Cream flavors"
-              dataSource={this.state.dataSource}
-              dataSourceConfig={this.dataSourceConfig()}
-              floatingLabelText="Add your favourite Ice Cream flavors :-)"
-              fullWidth={true}
-              filter={AutoComplete.fuzzyFilter}
-              maxSearchResults={5}
-              onNewRequest={(flavor) => this.flavorSelected(flavor)}
-              searchText={this.state.searchText}
-              onUpdateInput={(newText) => this.handleUpdateInput(newText)}
-              openOnFocus={true}
-              errorText={this.state.errorText}
-             />
           </div>
+          <AutoComplete
+            hintText="Add your favourite Ice Cream :-)"
+            dataSource={this.state.dataSource}
+            dataSourceConfig={this.dataSourceConfig()}
+            floatingLabelText="Add your favourite Ice Cream :-)"
+            filter={AutoComplete.fuzzyFilter}
+            maxSearchResults={5}
+            onNewRequest={(flavor) => this.flavorSelected(flavor)}
+            searchText={this.state.searchText}
+            onUpdateInput={(newText) => this.handleUpdateInput(newText)}
+            openOnFocus={true}
+            errorText={this.state.errorText}
+          />
+
+        </div>
     )
   }
 }
