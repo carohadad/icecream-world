@@ -7,18 +7,24 @@ import { CirclePicker } from 'react-color';
 
 
 class NewFlavor extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       colorHex: "",
       color: {},
-      name: this.props.defaultName,
+      name: "",
       errorName: "",
+      disabled: true,
     };
   }
 
-  disabledForm() {
-    return (this.state.colorHex === "" || this.state.name === "");
+  // Component gets rendered before the user types a new name, so the default name don't get updated if it's included in constructor props.
+  componentWillReceiveProps(nextProps) {
+    this.setState({name: nextProps.name});
+  }
+
+  checkDisabled(name, color) {
+    return (color === "" || name === "");
   }
 
   handleClose(){
@@ -30,13 +36,19 @@ class NewFlavor extends React.Component {
   };
 
   setColor(color, event){
-    this.setState({colorHex: color.hex, color: color});
+    this.setState({
+      colorHex: color.hex,
+      color: color,
+      disabled: this.checkDisabled(this.state.name, color.hex)});
   }
 
   setName(event) {
     const name = event.target.value;
     const errorText = (name === "") ? "Name is required" : "";
-    this.setState({name: name, errorName: errorText});
+    this.setState({
+      name: name,
+      errorName: errorText,
+      disabled: this.checkDisabled(name, this.state.colorHex)});
   }
 
   render() {
@@ -45,7 +57,7 @@ class NewFlavor extends React.Component {
         label="Save!"
         primary={true}
         onTouchTap={() => this.handleClose()}
-        disabled={this.disabledForm()}
+        disabled={this.state.disabled}
       />,
     ];
 
