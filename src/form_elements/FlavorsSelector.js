@@ -12,7 +12,9 @@ class FlavorsSelector extends React.Component {
     this.state = {
       dataSource : [],
       searchText: "",
-      errorText: ""
+      errorText: "",
+      newFlavorWindowOpen: false,
+      newFlavorWindowDefaultName: ""
     }
     this.firebaseFlavours = databaseRef.ref("flavors");
   }
@@ -55,14 +57,25 @@ class FlavorsSelector extends React.Component {
   }
 
   flavorSelected(flavor) {
-    this.setState({searchText: ""});
-    if (!this.props.flavors.includes(flavor)) {
-      this.props.flavorSelected(flavor);
+    if (typeof(flavor) === 'string' && !this.state.dataSource.map((e) => e.name).includes(flavor)) {
+      // it's a new flavor!
+      this.setState({newFlavorWindowOpen: true, newFlavorWindowDefaultName: flavor});
+      return;
+    } else {
+      this.setState({searchText: ""});
+      if (!this.props.flavors.includes(flavor)) {
+        this.props.flavorSelected(flavor);
+      }
     }
   }
 
   addFlavor(name, color) {
-    this.firebaseFlavours.push({name: name, color: color});
+    const key = this.firebaseFlavours.push({name: name, color: color}).key;
+    this.flavorSelected({name: name, color: color, key: key});
+  }
+
+  closeWindow() {
+    this.setState({newFlavorWindowOpen: false});
   }
 
   render() {
@@ -72,10 +85,10 @@ class FlavorsSelector extends React.Component {
             {this.renderChips(this.props.flavors)}
           </div>
           <AutoComplete
-            hintText="Add your favourite Ice Cream :-)"
+            hintText="Add ALL your favourite Ice Cream :-)"
             dataSource={this.state.dataSource}
             dataSourceConfig={this.dataSourceConfig()}
-            floatingLabelText="Add your favourite Ice Cream :-)"
+            floatingLabelText="Add ALL your favourite Ice Cream :-)"
             filter={AutoComplete.fuzzyFilter}
             maxSearchResults={5}
             onNewRequest={(flavor) => this.flavorSelected(flavor)}
@@ -84,7 +97,11 @@ class FlavorsSelector extends React.Component {
             openOnFocus={true}
             errorText={this.state.errorText}
           />
-          <NewFlavor flavorAddedHandler={(name, color) => this.addFlavor(name, color)}/>
+          <NewFlavor
+            flavorAddedHandler={(name, color) => this.addFlavor(name, color)}
+            open={this.state.newFlavorWindowOpen}
+            defaultName={this.state.newFlavorWindowDefaultName}
+            close={() => this.closeWindow()}/>
         </div>
     )
   }

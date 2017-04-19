@@ -7,13 +7,12 @@ import { CirclePicker } from 'react-color';
 
 
 class NewFlavor extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      open: false,
       colorHex: "",
       color: {},
-      name: "",
+      name: this.props.defaultName,
       errorName: "",
     };
   }
@@ -22,15 +21,12 @@ class NewFlavor extends React.Component {
     return (this.state.colorHex === "" || this.state.name === "");
   }
 
-  handleOpen() {
-    this.setState({open: true});
-  };
-
   handleClose(){
     if (this.state.colorHex !== "" && this.state.name !== "") {
       this.props.flavorAddedHandler(this.state.name, this.state.colorHex);
     }
-    this.setState({open: false, colorHex: '', color: {}, name: '', errorName: ''});
+    this.setState({colorHex: '', color: {}, name: '', errorName: ''});
+    this.props.close();
   };
 
   setColor(color, event){
@@ -56,18 +52,18 @@ class NewFlavor extends React.Component {
     return(
 
       <div>
-        <RaisedButton label="Add Flavor" onTouchTap={() => this.handleOpen()} />
         <Dialog
           title="Ice Cream Flavor Factory"
           actions={actions}
           modal={false}
-          open={this.state.open}
+          open={this.props.open}
           onRequestClose={() => this.handleClose()}
         >
           Nobody liked this flavor yet. Add it so others can like it ;)
           <br/>
           <TextField
             floatingLabelText="Flavor Name"
+            defaultValue={this.props.defaultName}
             onChange={(event) => this.setName(event)}
             errorText={this.state.errorName}
           />
