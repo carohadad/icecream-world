@@ -1,26 +1,26 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import { CirclePicker } from 'react-color';
+import databaseRef from './../database.js'
 
 
 class NewFlavor extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      colorHex: "",
       color: {},
-      name: "",
+      name: props.defaultName,
       errorName: "",
-      disabled: true,
+      disabled: true
     };
+    this.firebaseFlavours = databaseRef.ref("flavors");
   }
 
-  // Component gets rendered before the user types a new name, so the default name don't get updated if it's included in constructor props.
   componentWillReceiveProps(nextProps) {
-    this.setState({name: nextProps.name});
+    // even if it's binded in the defaultValue on the textField, this, this don't get updated
+    this.setState({name: nextProps.defaultName});
   }
 
   checkDisabled(name, color) {
@@ -28,8 +28,8 @@ class NewFlavor extends React.Component {
   }
 
   handleClose(){
-    if (this.state.colorHex !== "" && this.state.name !== "") {
-      this.props.flavorAddedHandler(this.state.name, this.state.colorHex);
+    if (this.state.color.hex !== "" && this.state.name !== "") {
+      this.props.flavorAddedHandler(this.state.name, this.state.color.hex);
     }
     this.setState({colorHex: '', color: {}, name: '', errorName: ''});
     this.props.close();
@@ -39,7 +39,8 @@ class NewFlavor extends React.Component {
     this.setState({
       colorHex: color.hex,
       color: color,
-      disabled: this.checkDisabled(this.state.name, color.hex)});
+      disabled: this.checkDisabled(this.state.name, color.hex)
+    });
   }
 
   setName(event) {
@@ -48,7 +49,7 @@ class NewFlavor extends React.Component {
     this.setState({
       name: name,
       errorName: errorText,
-      disabled: this.checkDisabled(name, this.state.colorHex)});
+      disabled: this.checkDisabled(name, this.state.color.hex)});
   }
 
   render() {
@@ -62,7 +63,6 @@ class NewFlavor extends React.Component {
     ];
 
     return(
-
       <div>
         <Dialog
           title="Ice Cream Flavor Factory"
@@ -75,9 +75,9 @@ class NewFlavor extends React.Component {
           <br/>
           <TextField
             floatingLabelText="Flavor Name"
-            defaultValue={this.props.defaultName}
             onChange={(event) => this.setName(event)}
             errorText={this.state.errorName}
+            value={this.state.name}
           />
           <br/>
           Flavor Color:
