@@ -20,7 +20,8 @@ class Form extends React.Component {
       super();
       this.state = {
         selectedCountry: null,
-        flavors:[]
+        flavors:[],
+        message: ""
       };
       this.firebaseVotes = databaseRef.ref("votes");
 
@@ -46,7 +47,11 @@ class Form extends React.Component {
 
   submit() {
     if (this.state.selectedCountry && this.state.flavors.length > 0) {
-      this.firebaseVotes.push({country: this.state.selectedCountry, flavors: this.state.flavors});
+      this.firebaseVotes
+      .push({country: this.state.selectedCountry, flavors: this.state.flavors})
+      .then(() => {
+        this.setState({message: "Thanks! Take a look at the results🍦😋"})
+      })
     }
   }
 
@@ -62,6 +67,7 @@ class Form extends React.Component {
             handleFlavorDelete={(key) => this.handleFlavorDelete(key)} />
           <br/>
           <RaisedButton label="Vote!" primary={true} onClick={()=> this.submit()}/>
+          <span>{this.state.message}</span>
         </Paper>
         <br/>
       </div>
