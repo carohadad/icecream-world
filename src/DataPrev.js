@@ -25,11 +25,9 @@ class DataPrev extends React.Component {
 
   render() {
     return(
-      <div>
-        <h1>Ice Cream World</h1>
-
-        <div>So far {this.state.votes} people voted. And counting! </div>
-      </div>
+      <h3 style={{'margin': '10px'}}>
+        So far {this.state.votes} people voted. And counting!
+      </h3>
     )
 
   }

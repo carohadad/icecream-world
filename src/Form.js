@@ -3,6 +3,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import RaisedButton from 'material-ui/RaisedButton';
 import CountrySelector from './form_elements/CountrySelector'
 import FlavorsSelector from './form_elements/FlavorsSelector'
+import Paper from 'material-ui/Paper';
 
 import databaseRef from './database.js'
 
@@ -52,12 +53,17 @@ class Form extends React.Component {
   render() {
     return(
       <div>
-        <CountrySelector countrySelected={(countryName) => this.countrySelected(countryName)}/>
-        <FlavorsSelector
-          flavorSelected={(flavor) => this.handleflavorSelected(flavor)}
-          flavors={this.state.flavors}
-          handleFlavorDelete={(key) => this.handleFlavorDelete(key)} />
-        <RaisedButton label="Vote!" primary={true} onClick={()=> this.submit()}/>
+        <Paper style={{'padding': '10px' }}>
+          <h2> Vote: </h2>
+          <CountrySelector countrySelected={(countryName) => this.countrySelected(countryName)}/>
+          <FlavorsSelector
+            flavorSelected={(flavor) => this.handleflavorSelected(flavor)}
+            flavors={this.state.flavors}
+            handleFlavorDelete={(key) => this.handleFlavorDelete(key)} />
+          <br/>
+          <RaisedButton label="Vote!" primary={true} onClick={()=> this.submit()}/>
+        </Paper>
+        <br/>
       </div>
     )
   }
