@@ -25,7 +25,6 @@
     "babel-jest": "^19.0.0",
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-react": "^6.23.0",
-    "country-list": "^1.1.0",
     "enzyme": "^2.8.0",
     "firebase": "^3.7.5",
     "gh-pages": "^0.12.0",
