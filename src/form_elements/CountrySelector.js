@@ -1,15 +1,24 @@
 import React from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
+import databaseRef from './../database.js'
 
 class CountrySelector extends React.Component {
 
   constructor() {
     super();
-    let countries = require('country-list')();
     this.state = {
-      dataSource: countries.getNames(),
+      dataSource: [],
       errorText: ""
     };
+  }
+
+  componentWillMount() {
+    databaseRef.ref('countries').once('value').then((snapshot) => {
+      this.state = {
+        dataSource: snapshot.val(),
+        errorText: ""
+      };
+    });
   }
 
   handleUpdateInput(searchText) {
