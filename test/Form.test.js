@@ -7,5 +7,5 @@ test('Should render Form', () => {
   const form = shallow(
     <Form/>
   );
-  expect(form.text()).toEqual('Hello World');
+  expect(form.text()).toEqual("<Paper />");
 });
