@@ -5,7 +5,7 @@ class DataPrev extends React.Component {
   constructor() {
     super();
     this.state = {
-      votes: []
+      votes: 0
     }
   }
 
@@ -13,9 +13,8 @@ class DataPrev extends React.Component {
     this.firebaseVotesRef = databaseRef.ref("votes");
     this.firebaseVotesRef.on("child_added", (childData) => {
       var votes = this.state.votes;
-      votes.push(childData.val())
       this.setState({
-        votes: votes
+        votes: votes+1
       });
     }).bind(this);
   }
@@ -28,11 +27,8 @@ class DataPrev extends React.Component {
     return(
       <div>
         <h1>Ice Cream World</h1>
-        <div>Because we all like icecream</div>
-        <div>But does everyone like the same flavors?</div>
-        <div>Is it there ANY world favourite?</div>
 
-        <div>So far {this.state.votes.length} people voted. And counting! </div>
+        <div>So far {this.state.votes} people voted. And counting! </div>
       </div>
     )
 
