@@ -71,12 +71,15 @@ class Results extends React.Component {
   }
 
   renderVotesForCountry(data) {
-    return Object.keys(data).sort((e) => data[e].votes).map((flavor) =>
-      <CardText expandable={true} style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center'}}>
-        {this.renderChip(data[flavor])}
-        <label> {data[flavor].votes} votes</label>
-      </CardText>
-    )
+    debugger
+    return Object.keys(data)
+      .sort((a, b) => data[b].votes - data[a].votes)
+      .map((flavor) =>
+        <CardText expandable={true} style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center'}}>
+          {this.renderChip(data[flavor])}
+          <label> {data[flavor].votes} votes</label>
+        </CardText>
+      )
   }
 
 
